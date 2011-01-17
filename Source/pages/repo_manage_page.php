@@ -24,11 +24,30 @@ function display_strategies( $p_type=null ) {
 		'>', plugin_lang_get( 'mapping_near' ), '</option>',
 		'<option value="', SOURCE_FAR, '"', ( $p_type == SOURCE_FAR ? ' selected="selected"' : '' ),
 		'>', plugin_lang_get( 'mapping_far' ), '</option>';
-	}
 	echo '<option value="', SOURCE_FIRST, '"', ( $p_type == SOURCE_FIRST ? ' selected="selected"' : '' ),
 		'>', plugin_lang_get( 'mapping_first' ), '</option>',
 		'<option value="', SOURCE_LAST, '"', ( $p_type == SOURCE_LAST ? ' selected="selected"' : '' ),
 		'>', plugin_lang_get( 'mapping_last' ), '</option>';
+	}
+}
+
+function display_pvm_versions($t_version_id=null) {
+	static $s_products = null;
+
+	if ( is_null( $s_products ) ) {
+		$s_products = PVMProduct::load_all( true );
+	}
+
+	if ( is_null( $t_version_id ) ) {
+		echo "<option value=\"\"></option>";
+	}
+
+	foreach( $s_products as $t_product ) {
+		foreach( $t_product->versions as $t_version ) {
+			echo "<option value=\"{$t_version->id}\"", $t_version->id == $t_version_id ? ' selected="selected"' : '',
+				">{$t_product->name} {$t_version->name}</option>";
+		}
+	}
 }
 
 function display_pvm_versions($t_version_id=null) {
