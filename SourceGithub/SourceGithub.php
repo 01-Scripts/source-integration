@@ -310,7 +310,7 @@ class SourceGithubPlugin extends MantisSourcePlugin {
 			}
 
 			$t_changeset = new SourceChangeset( $p_repo->id, $p_json->id, $p_branch,
-				$p_json->authored_date, $p_json->author->name, $p_json->message );
+				$p_json->authored_date, $p_json->author->name, utf8_decode($p_json->message) );
 
 			if ( count( $p_json->parents ) > 0 ) {
 				$t_parent = $p_json->parents[0];
