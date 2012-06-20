@@ -1,6 +1,6 @@
 <?php
 
-# Copyright (c) 2010 John Reese
+# Copyright (c) 2012 John Reese
 # Licensed under the MIT license
 
 require_once( config_get( 'plugin_path' ) . 'Source/Source.ViewAPI.php' );
@@ -78,7 +78,7 @@ if ( $t_count > $f_perpage ) {
 		echo $t_page_link( $f_offset-1, '<<' ), '&nbsp;&nbsp;';
 	}
 
-	$t_page_set = map( $t_page_link, $t_page_set );
+	$t_page_set = array_map( $t_page_link, $t_page_set );
 	echo join( ' ', $t_page_set );
 
 	if ( $t_current < $t_pages ) {

@@ -1,6 +1,6 @@
 <?php
 
-# Copyright (c) 2010 John Reese
+# Copyright (c) 2012 John Reese
 # Licensed under the MIT license
 
 auth_reauthenticate();
@@ -150,14 +150,22 @@ $t_import_urls = unserialize( plugin_config_get( 'import_urls' ) );
 
 <tr <?php echo helper_alternate_class() ?>>
 <td class="category"><?php echo plugin_lang_get( 'bugfix_handler' ) ?></td>
-<td><input name="bugfix_handler" type="checkbox" <?php echo (ON == plugin_config_get( 'bugfix_handler' ) ? 'checked="checked"' : '') ?>></td>
+<td><input name="bugfix_handler" type="checkbox" <?php echo (ON == plugin_config_get( 'bugfix_handler' ) ? 'checked="checked"' : '') ?>/></td>
+</tr>
+
+<tr><td class="spacer"></td></tr>
+
+<tr <?php echo helper_alternate_class() ?>>
+<td class="category"><?php echo plugin_lang_get( 'api_key' ) ?></td>
+<td><input name="api_key" size="50" value="<?php echo string_attribute( plugin_config_get( 'api_key' ) ) ?>"/><br/>
+<?php echo plugin_lang_get( 'api_key_info' ) ?></td>
 </tr>
 
 <tr><td class="spacer"></td></tr>
 
 <tr <?php echo helper_alternate_class() ?>>
 <td class="category"><?php echo plugin_lang_get( 'allow_remote_checkin' ) ?></td>
-<td><input name="remote_checkin" type="checkbox" <?php echo (ON == $t_remote_checkin ? 'checked="checked"' : '') ?>></td>
+<td><input name="remote_checkin" type="checkbox" <?php echo (ON == $t_remote_checkin ? 'checked="checked"' : '') ?>/></td>
 </tr>
 
 <tr <?php echo helper_alternate_class() ?>>
@@ -173,7 +181,7 @@ foreach( $t_checkin_urls as $t_ip ) {
 
 <tr <?php echo helper_alternate_class() ?>>
 <td class="category"><?php echo plugin_lang_get( 'allow_remote_import' ) ?></td>
-<td><input name="remote_imports" type="checkbox" <?php echo (ON == $t_remote_imports ? 'checked="checked"' : '') ?>></td>
+<td><input name="remote_imports" type="checkbox" <?php echo (ON == $t_remote_imports ? 'checked="checked"' : '') ?>/></td>
 </tr>
 
 <tr <?php echo helper_alternate_class() ?>>

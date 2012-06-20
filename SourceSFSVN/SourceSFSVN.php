@@ -1,6 +1,6 @@
 <?php
 
-# Copyright (c) 2010 John Reese
+# Copyright (c) 2012 John Reese
 # Licensed under the MIT license
 
 if ( false === include_once( config_get( 'plugin_path' ) . 'SourceSVN/SourceSVN.php' ) ) {
@@ -20,8 +20,8 @@ class SourceSFSVNPlugin extends SourceSVNPlugin {
 		);
 
 		$this->author = 'John Reese';
-		$this->contact = 'jreese@leetcode.net';
-		$this->url = 'http://leetcode.net';
+		$this->contact = 'john@noswap.com';
+		$this->url = 'http://noswap.com';
 	}
 
 	public $type = 'sfsvn';

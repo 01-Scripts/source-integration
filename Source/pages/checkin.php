@@ -1,6 +1,6 @@
 <?php
 
-# Copyright (c) 2010 John Reese
+# Copyright (c) 2012 John Reese
 # Licensed under the MIT license
 
 $t_address = $_SERVER['REMOTE_ADDR'];
@@ -49,6 +49,10 @@ if ( !$t_valid && ON == plugin_config_get( 'remote_checkin' ) ) {
 	}
 }
 
+if ( gpc_get_string( 'api_key' ) == plugin_config_get( 'api_key' ) && trim(plugin_config_get( 'api_key' )) != '') {
+	$t_valid = true;
+}
+
 # Not validated by this point gets the boot!
 if ( !$t_valid ) {
 	die( plugin_lang_get( 'invalid_checkin_url' ) );
@@ -62,13 +66,11 @@ if ( is_array( $t_predata ) && count( $t_predata ) == 2 ) {
 	$t_repo = $t_predata['repo'];
 	$f_data = $t_predata['data'];
 } else {
-	$f_repo_name = gpc_get_string( 'repo_name' );
+        $f_repo_name = gpc_get_string('repo_name','');
 	$f_data = gpc_get_string( 'data' );
-
 	# Try to find the repository by name
 	$t_repo = SourceRepo::load_by_name( $f_repo_name );
 }
-
 # Repo not found
 if ( is_null( $t_repo ) ) {
 	die( plugin_lang_get( 'invalid_repo' ) );

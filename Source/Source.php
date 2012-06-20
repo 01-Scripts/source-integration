@@ -1,6 +1,6 @@
 <?php
 
-# Copyright (c) 2010 John Reese
+# Copyright (c) 2012 John Reese
 # Licensed under the MIT license
 
 require_once( config_get_global( 'class_path' ) . 'MantisPlugin.class.php' );
@@ -10,7 +10,7 @@ require_once( config_get_global( 'class_path' ) . 'MantisPlugin.class.php' );
  * with the Mantis bug tracker software.
  */ 
 class SourcePlugin extends MantisPlugin {
-	static $framework_version = '0.16.2';
+	static $framework_version = '0.16.4';
 	static $cache = array();
 
 	function register() {
@@ -20,7 +20,6 @@ class SourcePlugin extends MantisPlugin {
 		$this->version = self::$framework_version;
 		$this->requires = array(
 			'MantisCore' => '1.2.0',
-			'Meta' => '0.1',
 		);
 		$this->uses = array(
 			'jQuery' => '1.3',
@@ -28,8 +27,8 @@ class SourcePlugin extends MantisPlugin {
 		$this->page		= 'manage_config_page';
 
 		$this->author	= 'John Reese';
-		$this->contact	= 'jreese@leetcode.net';
-		$this->url		= 'http://leetcode.net';
+		$this->contact	= 'john@noswap.com';
+		$this->url		= 'http://noswap.com';
 	}
 
 	function config() {
@@ -66,6 +65,8 @@ class SourcePlugin extends MantisPlugin {
 
 			'remote_imports'	=> OFF,
 			'import_urls'		=> serialize( array( 'localhost' ) ),
+			
+			'api_key'           => '',
 		);
 	}
 

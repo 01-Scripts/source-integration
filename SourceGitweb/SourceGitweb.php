@@ -1,6 +1,6 @@
 <?php
 
-# Copyright (c) 2010 John Reese
+# Copyright (c) 2012 John Reese
 # Licensed under the MIT license
 
 if ( false === include_once( config_get( 'plugin_path' ) . 'Source/MantisSourcePlugin.class.php' ) ) {
@@ -18,12 +18,11 @@ class SourceGitwebPlugin extends MantisSourcePlugin {
 		$this->requires = array(
 			'MantisCore' => '1.2.0',
 			'Source' => '0.16',
-			'Meta' => '0.1',
 		);
 
 		$this->author = 'John Reese';
-		$this->contact = 'jreese@leetcode.net';
-		$this->url = 'http://leetcode.net';
+		$this->contact = 'john@noswap.com';
+		$this->url = 'http://noswap.com';
 	}
 
 	public $type = 'gitweb';
@@ -139,10 +138,36 @@ class SourceGitwebPlugin extends MantisSourcePlugin {
 		if ( is_blank( $t_branch ) ) {
 			$t_branch = 'master';
 		}
+		
+		if ($t_branch != '*')
+		{
+			$t_branches = array_map( 'trim', explode( ',', $t_branch ) );
+		}
+		else
+		{
+			$t_heads_url = $this->uri_base( $p_repo ) . 'a=heads';
+			$t_branches_input = url_get( $t_heads_url );
+			
+			$t_branches_input = str_replace( array(PHP_EOL, '&lt;', '&gt;', '&nbsp;'), array('', '<', '>', ' '), $t_branches_input );
+			
+			$t_branches_input_p1 = strpos( $t_branches_input, '<table class="heads">' );
+			$t_branches_input_p2 = strpos( $t_branches_input, '<div class="page_footer">' );
+			$t_gitweb_heads = substr( $t_branches_input, $t_branches_input_p1, $t_branches_input_p2 - $t_branches_input_p1 );
+			preg_match_all( '/<a class="list name".*>(.*)<\/a>/iU', $t_gitweb_heads, $t_matches, PREG_SET_ORDER );
+			
+			$t_branches = array();
+			foreach ($t_matches as $match)
+			{
+				$t_branch = trim($match[1]);
+				if ($match[1] != 'origin' and !in_array($t_branch,$t_branches))
+				{
+					$t_branches[] = $t_branch;
+				}
+			}
+		}
 
-		$t_branches = map( 'trim', explode( ',', $t_branch ) );
 		$t_changesets = array();
-
+		
 		$t_changeset_table = plugin_table( 'changeset', 'Source' );
 
 		foreach( $t_branches as $t_branch ) {
@@ -247,13 +272,12 @@ class SourceGitwebPlugin extends MantisSourcePlugin {
 		if ( !SourceChangeset::exists( $p_repo->id, $t_commit['revision'] ) ) {
 
 			# Parse for commit data
-			preg_match( '#<tr><td>author</td><td>([^<>]*) <([^<>]*)></td></tr>'.
-				'<tr><td></td><td> \w*, (\d* \w* \d* \d*:\d*:\d*)#', $t_gitweb_data, $t_matches );
+			preg_match( '#<tr><td>author</td><td>(?:<a[^>]*>)?([^<>]*)(?:</a>)? *(?:<a[^>]*>)?<([^<>]*)>(?:</a>)?</td>(?:<[^<>]*>\s*)*?</tr>\n<tr><td></td><td><span class="datetime">\w*, (\d* \w* \d* \d*:\d*:\d*)#', $t_gitweb_data, $t_matches );
 			$t_commit['author'] = $t_matches[1];
 			$t_commit['author_email'] = $t_matches[2];
 			$t_commit['date'] = date( 'Y-m-d H:i:s', strtotime( $t_matches[3] ) );
 
-			if( preg_match( '#<tr><td>committer</td><td>([^<>]*) <([^<>]*)></td></tr>#', $t_gitweb_data, $t_matches ) ) {
+			if( preg_match( '#<tr><td>committer</td><td>(?:<a[^>]*>)?([^<>]*)(?:</a>)? *(?:<a[^>]*>)?<([^<>]*)>(?:</a>)?</td>(?:<[^<>]*>\s*)*?</tr>#', $t_gitweb_data, $t_matches ) ) {
 				$t_commit['committer'] = $t_matches[1];
 				$t_commit['committer_email'] = $t_matches[2];
 			}
@@ -265,7 +289,7 @@ class SourceGitwebPlugin extends MantisSourcePlugin {
 				}
 			}
 
-			preg_match( '#<div class="page_body">(.*)</div>#', $t_gitweb_data, $t_matches );
+			preg_match( '#<div class="page_body">\n(.*)\n</div>#', $t_gitweb_data, $t_matches );
 			$t_commit['message'] = trim( str_replace( '<br/>', PHP_EOL, $t_matches[1] ) );
 
 			# Strip ref links and signoff spans from commit message
@@ -277,8 +301,8 @@ class SourceGitwebPlugin extends MantisSourcePlugin {
 			# Parse for changed file data
 			$t_commit['files'] = array();
 
-			preg_match_all( '#<tr class="(?:light|dark)"><td><a class="list" href="[^"]*;h=(\w+);[^"]*">([^<>]+)</a></td>'.
-				'<td>(?:<span class="file_status (\w+)">[^<>]*</span>)?</td>#',
+			preg_match_all( '#<tr class="(?:light|dark)">\n<td><a class="list" href="[^"]*;h=(\w+);[^"]*">([^<>]+)</a></td>'.
+				'\n<td>(?:<span class="file_status (\w+)">[^<>]*</span>)?</td>#',
 				$t_gitweb_files, $t_matches, PREG_SET_ORDER );
 
 			foreach( $t_matches as $t_file_matches ) {

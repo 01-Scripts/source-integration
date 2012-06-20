@@ -1,6 +1,6 @@
 <?php
 
-# Copyright (c) 2010 John Reese
+# Copyright (c) 2012 John Reese
 # Licensed under the MIT license
 
 form_security_validate( 'plugin_Source_repo_update_mappings' );
@@ -15,13 +15,14 @@ $t_mappings = $t_repo->load_mappings();
 
 # start processing the updated form entries for each mapping
 foreach( $t_mappings as $t_mapping ) {
-	$f_mapping_delete = gpc_get_bool( $t_mapping->branch . '_delete', false );
+	$t_posted_branch = str_replace( '.', '_', $t_mapping->branch );
+
+	$f_mapping_delete = gpc_get_bool( $t_posted_branch . '_delete', false );
 
 	if ( $f_mapping_delete ) {
 		$t_mapping->delete();
+		continue;
 	}
-
-	$t_posted_branch = str_replace( '.', '_', $t_mapping->branch );
 
 	$f_mapping_branch = gpc_get_string( $t_posted_branch . '_branch', $t_mapping->branch );
 	$f_mapping_type = gpc_get_int( $t_posted_branch . '_type', $t_mapping->type );

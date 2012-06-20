@@ -1,6 +1,6 @@
 <?php
 
-# Copyright (c) 2010 John Reese
+# Copyright (c) 2012 John Reese
 # Licensed under the MIT license
 
 require_once( 'MantisSourcePlugin.class.php' );
@@ -683,6 +683,29 @@ class SourceRepo {
 
 		$t_query = "SELECT * FROM $t_repo_table WHERE id=" . db_param();
 		$t_result = db_query_bound( $t_query, array( (int) $p_id ) );
+
+		if ( db_num_rows( $t_result ) < 1 ) {
+			trigger_error( ERROR_GENERIC, ERROR );
+		}
+
+		$t_row = db_fetch_array( $t_result );
+
+		$t_repo = new SourceRepo( $t_row['type'], $t_row['name'], $t_row['url'], $t_row['info'] );
+		$t_repo->id = $t_row['id'];
+
+		return $t_repo;
+	}
+
+	/**
+	 * Fetch a new Repo object given a name.
+	 * @param string Repository name
+	 * @return multi Repo object
+	 */
+	static function load_from_name( $p_name ) {
+		$t_repo_table = plugin_table( 'repository', 'Source' );
+
+		$t_query = "SELECT * FROM $t_repo_table WHERE name LIKE " . db_param();
+		$t_result = db_query_bound( $t_query, array( trim($p_name) ) );
 
 		if ( db_num_rows( $t_result ) < 1 ) {
 			trigger_error( ERROR_GENERIC, ERROR );

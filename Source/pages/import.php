@@ -1,6 +1,6 @@
 <?php
 
-# Copyright (c) 2010 John Reese
+# Copyright (c) 2012 John Reese
 # Licensed under the MIT license
 
 $t_address = $_SERVER['REMOTE_ADDR'];
@@ -50,7 +50,9 @@ if ( !$t_valid && ON == plugin_config_get( 'remote_imports' ) ) {
 		}
 	}
 }
-
+if ( gpc_get_string( 'api_key' ) == plugin_config_get( 'api_key' ) ) {
+	$t_valid = true;
+}
 # Not validated by this point gets the boot!
 if ( !$t_valid ) {
 	die( plugin_lang_get( 'invalid_import_url' ) );
@@ -65,6 +67,9 @@ if ( $f_repo_id == 'all' ) {
 } elseif ( is_numeric( $f_repo_id ) ) {
 	$t_repo_id = (int) $f_repo_id;
 	$t_repos = array( SourceRepo::load( $t_repo_id ) );
+} else {
+	$f_repo_name = $f_repo_id;
+	$t_repos = array( SourceRepo::load_from_name( $f_repo_name ) );
 }
 
 # Loop through all repos to be imported
