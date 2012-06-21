@@ -325,9 +325,7 @@ endif; ?></td>
 
 		while( count( $s_parents ) > 0 && $s_counter < 200 ) {
 			$t_commit_id = array_shift( $s_parents );
-			
-			//mail("email@domain.de","Service hook is importing $t_commit_id ... ", "repos/$t_username/$t_reponame/commits/$t_commit_id");
-			
+
 			echo "Retrieving $t_commit_id ... ";
 			$t_uri = $this->api_uri( $p_repo, "repos/$t_username/$t_reponame/commits/$t_commit_id" );
 			$t_json = $this->api_json_url( $p_repo, $t_uri );
