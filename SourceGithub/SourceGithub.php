@@ -212,7 +212,7 @@ endif; ?></td>
 		}
 
 		$t_data = json_decode( $f_payload, true );
-		$t_reponame = strtolower($t_data['repository']['name']);
+		$t_reponame = $t_data['repository']['name'];
 
 		$t_repo_table = plugin_table( 'repository', 'Source' );
 
